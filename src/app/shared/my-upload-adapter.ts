@@ -1,14 +1,13 @@
 export class MyUploadAdapter {
     loader: any;
     url: string;
-    uploadedImageUrl: string | null = null;  // Store uploaded image URL
+    uploadedImageUrl: string | null = null; 
   
     constructor(loader: any, url: string) {
       this.loader = loader;
-      this.url = url;  // This is the URL for image upload
+      this.url = url;  
     }
   
-    // Starts the upload process.
     upload() {
       return this.loader.file
         .then((file: any) => {
@@ -21,25 +20,25 @@ export class MyUploadAdapter {
           })
           .then(response => response.json())
           .then(data => {
-            this.uploadedImageUrl = data.result.url;  // Save the uploaded image URL
+            this.uploadedImageUrl = data.result.url;  
             console.log('Upload successful:', data.result.url);
             
-            return { default: data.result.url };      // Return the image URL to CKEditor
+            return { default: data.result.url };      
           })
           .catch(error => {
             console.error('Upload failed:', error);
-            return Promise.reject(error);      // Ensure the error is returned
+            return Promise.reject(error);      
           });
         })
         .catch((error: any) => {
           console.error('Failed to get file:', error);
-          return Promise.reject(error);        // Ensure the promise is rejected in case of error
+          return Promise.reject(error);        
         });
     }
   
-    // Aborts the upload process.
+    
     abort() {
-      // Optionally, implement abort logic
+      
     }
   }
   

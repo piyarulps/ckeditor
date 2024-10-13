@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   public Editor = ClassicEditor;
   public editorData = '<p>Insert your text or image here!</p>';
-  private previousImageUrls: string[] = []; // Track previous image URLs
+  private previousImageUrls: string[] = [];
   private uploadAdapter: MyUploadAdapter | null = null;
 
   public editorConfig = {
@@ -48,7 +48,7 @@ export class AppComponent {
         }
       ]
     },
-    extraPlugins: [ this.imageUploadPlugin.bind(this) ] // Ensure you configure the upload adapter for drag and drop
+    extraPlugins: [ this.imageUploadPlugin.bind(this) ] 
   };
 
   constructor(private httpClient: HttpClient) {}
@@ -56,13 +56,10 @@ export class AppComponent {
   onReady(editor: any) {
     console.log('CKEditor is ready');
 
-    // Set the upload adapter for image upload
     editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
       this.uploadAdapter = new MyUploadAdapter(loader, 'https://kanyingstaging.azurewebsites.net/api/Upload/UploadFile');
       return this.uploadAdapter;
     };
-
-    // Listen for content changes in the editor
     editor.model.document.on('change:data', () => {
       this.detectImageDeletions(editor);
     });
@@ -80,30 +77,25 @@ export class AppComponent {
 
     const currentImageUrls = currentImageElements.map((image: any) => image.getAttribute('src'));
 
-    // Compare the current image URLs with the previous image URLs
     const deletedImages = this.previousImageUrls.filter(url => !currentImageUrls.includes(url));
 
     if (deletedImages.length > 0) {
-      // Call the delete API for each deleted image
       deletedImages.forEach(imageUrl => {
         this.onDeleteImage(imageUrl);
       });
     }
 
-    // Update the previous image URLs with the current ones
     this.previousImageUrls = currentImageUrls;
   }
 
   deleteImage(imageUrl: string) {
     const apiUrl = 'https://kanyingstaging.azurewebsites.net/api/Upload/DeleteFile';
 
-    // Prepare the request body
     const body = {
-      fileUrl: imageUrl // Ensure the key matches what the API expects
+      fileUrl: imageUrl 
     };
 
-    console.log('Calling delete API for:', imageUrl); // Debug log
-
+    console.log('Calling delete API for:', imageUrl); 
     this.httpClient.post(apiUrl, body).subscribe(
       (response) => {
         console.log('Image deleted successfully:', response);
@@ -115,8 +107,8 @@ export class AppComponent {
   }
 
   onDeleteImage(imageUrl: string) {
-    console.log('Executing onDeleteImage for:', imageUrl); // Debug log
-    alert(`Image removed: ${imageUrl}`); // Alert when an image is removed
-    this.deleteImage(imageUrl); // Call the deleteImage method
+    console.log('Executing onDeleteImage for:', imageUrl);
+    alert(`Image removed: ${imageUrl}`); 
+    this.deleteImage(imageUrl); 
   }
 }
